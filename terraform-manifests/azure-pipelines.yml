@@ -13,7 +13,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-  - stage: TerraformValidate
+  - stage: 
     jobs:
     - job: TerraformValidateJob
       continueOnError: false
