@@ -4,13 +4,15 @@
 # https://aka.ms/yaml
 
 trigger:
-- none
+- main
 
 variables:
   DEV_ENVIRONMENT: dev 
-  QA_ENVIRONMENT: qa
-  PRODUCTION_ENVIRONMENT: prod
 
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+appendCommitMessageToRunName:
 stages:
   - stage: TerraformValidate
     jobs:
