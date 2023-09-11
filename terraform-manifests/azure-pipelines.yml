@@ -12,7 +12,6 @@ variables:
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
-appendCommitMessageToRunName:
 stages:
   - stage: TerraformValidate
     jobs:
