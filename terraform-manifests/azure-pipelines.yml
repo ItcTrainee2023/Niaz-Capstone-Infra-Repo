@@ -3,93 +3,93 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-# trigger:
-# - none
+trigger:
+- none
 
-# variables:
-#   DEV_ENVIRONMENT: dev 
-#   QA_ENVIRONMENT: qa
-#   PRODUCTION_ENVIRONMENT: prod
+variables:
+  DEV_ENVIRONMENT: dev 
+  QA_ENVIRONMENT: qa
+  PRODUCTION_ENVIRONMENT: prod
 
-# stages:
-#   - stage: TerraformValidate
-#     jobs:
-#       - job: TerraformValidateJob
-#         continueOnError: false
-#         steps:
-#         - task: PublishPipelineArtifact@1
-#           displayName: Publish Artifacts
-#           inputs:
-#             targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-#             artifact: 'terraform-manifests-out'
-#             publishLocation: 'pipeline' 
-#         - task: TerraformInstaller@0
-#           displayName: Terraform installer
-#           inputs:
-#             terraformVersion: 'latest'
-#         - task: TerraformCLI@0
-#           inputs:
-#             command: 'init'
-#             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-#             backendType: 'azurerm'
-#             backendServiceArm: 'terraform-aks-azurerm-svc-con'
-#             backendAzureRmSubscriptionId: '606e824b-aaf7-4b4e-9057-b459f6a4436d'
-#             ensureBackend: true
-#             backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
-#             backendAzureRmResourceGroupLocation: 'East US'
-#             backendAzureRmStorageAccountName: 'tstatestorageniaz'
-#             backendAzureRmStorageAccountSku: 'Standard_LRS'
-#             backendAzureRmContainerName: 'data'
-#             backendAzureRmKey: 'terraform-custom-vnet.tfstate'
-#             allowTelemetryCollection: false
-#         - task: TerraformCLI@0
-#           displayName: Terraform Validate
-#           inputs:
-#             command: 'validate'
-#             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-#             allowTelemetryCollection: false
-#   - stage: DeployAKSClusters
-#     jobs:
-#     - deployment: DeployDevAKSCluster
-#       displayName: DeployDevAKSCluster
-#       pool:
-#         vmImage: 'ubuntu-latest'
-#       environment: $(Dev_Environment)
-#       strategy: 
-#         runOnce:
-#           deploy:
-#             steps:
-#             - task: DownloadSecureFile@1
-#               displayName: Download SSH Key 
-#               name: sshkey 
-#               inputs:
-#                 secureFile: 'aks-terraform-devops-ssh-key-ububtu.pub'
-#             - task: TerraformCLI@0
-#               inputs:
-#                 command: 'init'
-#                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-#                 backendType: 'azurerm'
-#                 backendServiceArm: 'terraform-aks-azurerm-svc-con'
-#                 ensureBackend: true
-#                 backendAzureRmResourceGroupName: 'Stefans-Resource-Group'
-#                 backendAzureRmResourceGroupLocation: 'Canada Central'
-#                 backendAzureRmStorageAccountName: 'stefanstorage2496'
-#                 backendAzureRmContainerName: 'data'
-#                 backendAzureRmKey: 'aks-$(DEV_ENVIRONMENT).tfstate'
-#                 allowTelemetryCollection: false
-#             - task: TerraformCLI@0
-#               displayName: Terraform Plan
-#               inputs:
-#                 command: 'plan'
-#                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-#                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
-#                 commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)  -var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
-#                 allowTelemetryCollection: false
-#             - task: TerraformCLI@0
-#               displayName: Terraform Apply
-#               inputs:
-#                 command: 'apply'
-#                 workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-#                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
-#                 commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
-#                 allowTelemetryCollection: false
+stages:
+  - stage: TerraformValidate
+    jobs:
+      - job: TerraformValidateJob
+        continueOnError: false
+        steps:
+        - task: PublishPipelineArtifact@1
+          displayName: Publish Artifacts
+          inputs:
+            targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            artifact: 'terraform-manifests-out'
+            publishLocation: 'pipeline' 
+        - task: TerraformInstaller@0
+          displayName: Terraform installer
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformCLI@0
+          inputs:
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            backendType: 'azurerm'
+            backendServiceArm: 'terraform-aks-azurerm-svc-con'
+            backendAzureRmSubscriptionId: '606e824b-aaf7-4b4e-9057-b459f6a4436d'
+            ensureBackend: true
+            backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
+            backendAzureRmResourceGroupLocation: 'East US'
+            backendAzureRmStorageAccountName: 'tstatestorageniaz'
+            backendAzureRmStorageAccountSku: 'Standard_LRS'
+            backendAzureRmContainerName: 'data'
+            backendAzureRmKey: 'terraform-custom-vnet.tfstate'
+            allowTelemetryCollection: false
+        - task: TerraformCLI@0
+          displayName: Terraform Validate
+          inputs:
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+            allowTelemetryCollection: false
+  - stage: DeployAKSClusters
+    jobs:
+    - deployment: DeployDevAKSCluster
+      displayName: DeployDevAKSCluster
+      pool:
+        vmImage: 'ubuntu-latest'
+      environment: $(Dev_Environment)
+      strategy: 
+        runOnce:
+          deploy:
+            steps:
+            - task: DownloadSecureFile@1
+              displayName: Download SSH Key 
+              name: sshkey 
+              inputs:
+                secureFile: 'aks-terraform-devops-ssh-key-ububtu.pub'
+            - task: TerraformCLI@0
+              inputs:
+                command: 'init'
+                workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+                backendType: 'azurerm'
+                backendServiceArm: 'terraform-aks-azurerm-svc-con'
+                ensureBackend: true
+                backendAzureRmResourceGroupName: 'Stefans-Resource-Group'
+                backendAzureRmResourceGroupLocation: 'Canada Central'
+                backendAzureRmStorageAccountName: 'stefanstorage2496'
+                backendAzureRmContainerName: 'data'
+                backendAzureRmKey: 'aks-$(DEV_ENVIRONMENT).tfstate'
+                allowTelemetryCollection: false
+            - task: TerraformCLI@0
+              displayName: Terraform Plan
+              inputs:
+                command: 'plan'
+                workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+                environmentServiceName: 'terraform-aks-azurerm-svc-con'
+                commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath)  -var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                allowTelemetryCollection: false
+            - task: TerraformCLI@0
+              displayName: Terraform Apply
+              inputs:
+                command: 'apply'
+                workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
+                environmentServiceName: 'terraform-aks-azurerm-svc-con'
+                commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                allowTelemetryCollection: false
