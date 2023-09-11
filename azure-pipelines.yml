@@ -1,4 +1,4 @@
-  # Starter pipeline
+# Starter pipeline
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -55,7 +55,7 @@ stages:
       displayName: DeployDevAKSCluster
       pool:
         vmImage: 'ubuntu-latest'
-      environment: $(Dev_Environment)
+      environment: $(DEV_ENVIRONMENT)
       strategy: 
         runOnce:
           deploy:
