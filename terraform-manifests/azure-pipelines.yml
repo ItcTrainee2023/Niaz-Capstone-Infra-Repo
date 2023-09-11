@@ -15,40 +15,38 @@ variables:
 stages:
   - stage: TerraformValidate
     jobs:
-      - job: TerraformValidateJob
-        continueOnError: false
-        steps:
-        - task: PublishPipelineArtifact@1
-          displayName: Publish Artifacts
-          inputs:
-            targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-            artifact: 'terraform-manifests-out'
-            publishLocation: 'pipeline' 
-        - task: TerraformInstaller@0
-          displayName: Terraform installer
-          inputs:
-            terraformVersion: 'latest'
-        - task: TerraformCLI@0
-          inputs:
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-            backendType: 'azurerm'
-            backendServiceArm: 'terraform-aks-azurerm-svc-con'
-            backendAzureRmSubscriptionId: '606e824b-aaf7-4b4e-9057-b459f6a4436d'
-            ensureBackend: true
-            backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
-            backendAzureRmResourceGroupLocation: 'East US'
-            backendAzureRmStorageAccountName: 'tstatestorageniaz'
-            backendAzureRmStorageAccountSku: 'Standard_LRS'
-            backendAzureRmContainerName: 'data'
-            backendAzureRmKey: 'terraform-custom-vnet.tfstate'
-            allowTelemetryCollection: false
-        - task: TerraformCLI@0
-          displayName: Terraform Validate
-          inputs:
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-            allowTelemetryCollection: false
+    - job: TerraformValidateJob
+      continueOnError: false
+      steps:
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Artifacts
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+          artifact: 'terraform-manifests-out'
+          publishLocation: 'pipeline' 
+      - task: TerraformInstaller@0
+        displayName: Terraform installer
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+          backendType: 'azurerm'
+          backendServiceArm: 'terraform-aks-azurerm-svc-con'
+          backendAzureRmSubscriptionId: '606e824b-aaf7-4b4e-9057-b459f6a4436d'
+          backendAzureRmResourceGroupName: 'Capstonedemoniaz1'
+          backendAzureRmStorageAccountName: 'tstatestorageniaz'
+          backendAzureRmContainerName: 'capstonetfstatefile'
+          backendAzureRmKey: 'terraform-custom-vnet.tfstate'
+          allowTelemetryCollection: false
+      - task: TerraformCLI@0
+        displayName: Terraform Validate
+        inputs:
+          command: 'validate'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+          allowTelemetryCollection: false
   - stage: DeployAKSClusters
     jobs:
     - deployment: DeployDevAKSCluster
